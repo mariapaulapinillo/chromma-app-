@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chroma App - Test de Colorimetría y Maquillaje</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">CHROMA<span>APP</span></div>
+        <div class="subtitle">Análisis de Colorimetría & Recomendador de Maquillaje</div>
+    </header>
+
+    <main class="container">
+        <!-- SECCIÓN INTRO -->
+        <section id="intro-screen" class="card text-center">
+            <h1>Descubre tus colores ideales</h1>
+            <p>Responde nuestro test especializado de 27 preguntas para conocer tu estación colorimétrica y recibir recomendaciones de maquillaje personalizadas en COP.</p>
+            <button id="btn-start" class="btn-primary">Iniciar Cuestionario</button>
+        </section>
+
+        <!-- SECCIÓN CUESTIONARIO -->
+        <section id="quiz-screen" class="card hidden">
+            <div class="progress-container">
+                <div class="progress-bar-background">
+                    <div id="progress-bar" class="progress-bar-fill"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="section-title">Sección 1: Colorimetría</span>
+                    <span id="question-counter">Pregunta 1 de 27</span>
+                </div>
+            </div>
+
+            <div id="question-container" class="question-container">
+                <!-- Contenido dinámico inyectado con app.js -->
+            </div>
+
+            <div class="quiz-nav-buttons">
+                <button id="btn-prev" class="btn-secondary hidden">Anterior</button>
+                <button id="btn-next" class="btn-primary" disabled>Siguiente</button>
+            </div>
+        </section>
+
+        <!-- SECCIÓN DE CARGA -->
+        <section id="loading-screen" class="card text-center hidden">
+            <div class="spinner"></div>
+            <h2>Analizando tu perfil colorimétrico...</h2>
+            <p>Estamos calculando tu estación y seleccionando los mejores productos para ti.</p>
+        </section>
+
+        <!-- SECCIÓN RESULTADOS (Sprint 4) -->
+        <section id="results-screen" class="hidden">
+            <!-- Inyectado dinámicamente -->
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
