@@ -476,3 +476,53 @@ body {
     color: var(--primary-color);
     margin-top: auto;
 }
+
+
+/* ---------- Sprint 6 ---------- */
+.main-nav { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.nav-btn { background: transparent; border: 1px solid currentColor; border-radius: 999px; padding: 6px 14px; cursor: pointer; font: inherit; font-size: 0.85rem; color: inherit; opacity: 0.75; }
+.nav-btn.active, .nav-btn:hover { opacity: 1; font-weight: 600; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+.ingredient-badges { display: flex; flex-wrap: wrap; gap: 4px; margin: 8px 0; }
+.ing-badge { font-size: 0.72rem; padding: 3px 8px; border-radius: 999px; font-weight: 500; }
+.badge-warning-alcohol { background: #fde8e8; color: #b42318; }
+.badge-warning-fragrance { background: #fef6d8; color: #8a6100; }
+.badge-sensitive-safe { background: #dff5ec; color: #17694a; }
+.badge-owned { background: #ece6fb; color: #4b3a9a; border-radius: 999px; padding: 2px 8px; font-weight: 600; }
+.availability { margin-top: 8px; font-size: 0.78rem; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+
+.btn-dupe { width: 100%; margin-top: 8px; padding: 8px; border: 1px dashed #b86b77; background: transparent; border-radius: 8px; cursor: pointer; font: inherit; font-size: 0.85rem; }
+.btn-dupe:hover { background: #fbeef0; }
+.btn-small { padding: 4px 10px; font-size: 0.8rem; margin-bottom: 8px; }
+
+.store-details { margin-top: 10px; font-size: 0.85rem; }
+.store-details summary { cursor: pointer; font-weight: 600; }
+.store-details h5 { margin: 10px 0 4px; }
+.store-list { list-style: none; padding: 0; margin: 0; }
+.store-row { display: flex; justify-content: space-between; gap: 8px; padding: 4px 0; border-bottom: 1px solid #eee; }
+.store-row.best { font-weight: 600; color: #1c6b3a; }
+.store-hint { font-size: 0.78rem; color: #777; margin: 6px 0; }
+
+.tool-form { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+.tool-form select, .tool-form input { flex: 1 1 240px; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font: inherit; }
+#tools-screen .card { margin-bottom: 16px; }
+
+.dupes-list { display: grid; gap: 10px; }
+.dupe-card { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid #eee; border-radius: 12px; flex-wrap: wrap; }
+.shade-dot.big { width: 40px; height: 40px; border-radius: 50%; flex: none; border: 1px solid #0002; }
+.dupe-info { display: flex; flex-direction: column; flex: 1 1 160px; }
+.dupe-numbers { display: flex; flex-direction: column; align-items: flex-end; margin-left: auto; }
+.similarity { font-weight: 700; color: #1c6b3a; }
+.savings { font-size: 0.8rem; color: #1c6b3a; }
+
+.bag-summary { margin: 12px 0; }
+.bag-message { font-weight: 600; margin-bottom: 8px; }
+.bag-steps { list-style: none; padding: 0; display: grid; gap: 8px; }
+.bag-step { display: flex; flex-direction: column; gap: 2px; padding: 10px; border-radius: 10px; border: 1px solid #eee; }
+.bag-step.owned { background: #f1faf4; }
+.bag-step.missing { background: #fffaf0; }
+.step-status { font-size: 0.8rem; }
+.bag-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 16px; }
+.bag-group { border: 1px solid #eee; border-radius: 10px; padding: 8px 12px; }
+.bag-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 0.85rem; cursor: pointer; }

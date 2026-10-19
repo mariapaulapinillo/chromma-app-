@@ -11,6 +11,11 @@
     <header class="navbar">
         <div class="logo">CHROMA<span>APP</span></div>
         <div class="subtitle">Análisis de Colorimetría & Recomendador de Maquillaje</div>
+        <nav class="main-nav" aria-label="Secciones">
+            <button type="button" class="nav-btn active" data-view="test">Test Colorimetría</button>
+            <button type="button" class="nav-btn" data-view="dupes">Traductor de Dupes</button>
+            <button type="button" class="nav-btn" data-view="bag">Mi Cosmetiquera</button>
+        </nav>
     </header>
 
     <main class="container">
@@ -53,6 +58,38 @@
         <!-- SECCIÓN RESULTADOS (Sprint 4) -->
         <section id="results-screen" class="hidden">
             <!-- Inyectado dinámicamente -->
+        </section>
+
+        <!-- HERRAMIENTAS (Sprint 6): Dupes y Mi Cosmetiquera -->
+        <section id="tools-screen" class="hidden">
+            <div id="dupes-screen" class="card hidden">
+                <h2>🔁 Traductor de Tonos &amp; Buscador de Dupes</h2>
+                <p class="sub-heading">Elige un producto de gama alta y te mostramos equivalentes más económicos (ΔE ≤ 5).</p>
+                <div class="tool-form">
+                    <label for="dupe-search" class="visually-hidden">Producto o tono de alta gama</label>
+                    <input type="search" id="dupe-search" list="dupe-options" placeholder="Ej. NARS Orgasm, Charlotte Tilbury Pillow Talk" autocomplete="off">
+                    <datalist id="dupe-options"></datalist>
+                    <button type="button" id="btn-find-dupes" class="btn-primary">Buscar Dupes</button>
+                </div>
+                <div id="dupes-results" aria-live="polite"></div>
+            </div>
+
+            <div id="cosmetic-bag-screen" class="card hidden">
+                <h2>👜 Mi Cosmetiquera</h2>
+                <p class="sub-heading">Marca lo que ya tienes y te decimos solo lo que te falta para tu look.</p>
+                <div class="tool-form">
+                    <label for="occasion-select" class="visually-hidden">Ocasión</label>
+                    <select id="occasion-select">
+                        <option value="dia">Día</option>
+                        <option value="oficina">Oficina</option>
+                        <option value="fiesta">Fiesta</option>
+                    </select>
+                    <button type="button" id="btn-bag-plan" class="btn-primary">Armar mi look</button>
+                </div>
+                <div id="bag-plan" aria-live="polite"></div>
+                <div id="bag-kit" aria-live="polite"></div>
+                <div id="bag-list" class="bag-list"></div>
+            </div>
         </section>
     </main>
 

@@ -1,6 +1,8 @@
 from database import get_connection
+from ingredients import analyze_ingredients
 
 NO_LIMIT = 9999999
+HIGH_END_MIN_PRICE = 90000  # desde aquí se ofrece el botón de dupe económico
 
 
 def parse_budget_limit(budget_str):
@@ -30,6 +32,7 @@ def recommend_products(user_profile):
     - season: Coincidencia con la estación o "Todas"
     - skin_type: Coincidencia con el tipo de piel o "Todas"
     - budget: Límite superior de precio en COP
+    - piel "Sensible": solo productos sin alcohol ni fragancia (is_sensitive_safe)
     y ordena por compatibilidad: acabado preferido ("Todos" cuenta como
     coincidencia) y luego precio ascendente. El acabado es una preferencia
     de orden, no un filtro duro.
@@ -39,11 +42,13 @@ def recommend_products(user_profile):
     finish = _first_word(user_profile.get("finish", ""))
     max_price = parse_budget_limit(user_profile.get("budget", ""))
 
+    sensitive_clause = "AND is_sensitive_safe = 1" if skin_type == "Sensible" else ""
+
     conn = get_connection()
     try:
-        rows = conn.execute('''
+        rows = conn.execute(f'''
             SELECT * FROM products
-            WHERE price_cop <= ?
+            WHERE price_cop <= ? {sensitive_clause}
               AND (season_compat = ? OR season_compat = 'Todas')
               AND (skin_type_compat = ? OR skin_type_compat = 'Todas')
             ORDER BY
@@ -55,7 +60,12 @@ def recommend_products(user_profile):
     finally:
         conn.close()
 
-    return [{
+    return [product_to_dict(row) for row in rows]
+
+
+def product_to_dict(row):
+    analysis = analyze_ingredients(row["ingredients_list"])
+    return {
         "id": row["id"],
         "brand": row["brand"],
         "name": row["name"],
@@ -69,4 +79,7 @@ def recommend_products(user_profile):
         "price_formatted": f"${row['price_cop']:,} COP".replace(",", "."),
         "image_url": row["image_url"],
         "description": row["description"],
-    } for row in rows]
+        "badges": analysis["badges"],
+        "ingredient_warnings": analysis["warnings"],
+        "is_high_end": row["price_cop"] >= HIGH_END_MIN_PRICE,
+    }
