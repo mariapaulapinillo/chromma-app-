@@ -4,7 +4,67 @@ import sqlite3
 from ingredients import analyze_ingredients
 
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "chroma.db")
-PLACEHOLDER = "https://via.placeholder.com/150"
+PLACEHOLDER = "https://via.placeholder.com/150"  # valor legado: se reemplaza por imágenes locales
+IMG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static", "img", "products")
+IMG_URL_PREFIX = "/static/img/products/"
+
+
+def _shade(hex_color, factor):
+    """Aclara (factor > 0) u oscurece (factor < 0) un #RRGGBB."""
+    channels = [int(hex_color[i:i + 2], 16) for i in (1, 3, 5)]
+    if factor >= 0:
+        channels = [round(c + (255 - c) * factor) for c in channels]
+    else:
+        channels = [round(c * (1 + factor)) for c in channels]
+    return "#%02x%02x%02x" % tuple(channels)
+
+
+def _product_svg(category, hex_color):
+    c, light, dark = hex_color, _shade(hex_color, 0.45), _shade(hex_color, -0.3)
+    if category == "Labial":
+        art = (f'<rect x="115" y="150" width="70" height="95" rx="6" fill="#2b2b33"/>'
+               f'<rect x="125" y="95" width="50" height="62" fill="#b9a36a"/>'
+               f'<path d="M127 95 V70 Q150 40 173 62 V95 Z" fill="{c}"/>'
+               f'<path d="M140 68 Q150 55 160 62" stroke="{light}" stroke-width="4" fill="none" stroke-linecap="round"/>')
+    elif category == "Rubor":
+        art = (f'<circle cx="150" cy="150" r="88" fill="#2b2b33"/>'
+               f'<circle cx="150" cy="150" r="70" fill="{c}"/>'
+               f'<ellipse cx="128" cy="125" rx="22" ry="12" fill="{light}"/>')
+    elif category == "Sombras":
+        pans = "".join(
+            f'<rect x="{62 + col * 62}" y="{100 + row * 58}" width="52" height="48" rx="8" fill="{shade}"/>'
+            for row, shades in enumerate(((light, c, dark), (dark, light, c)))
+            for col, shade in enumerate(shades))
+        art = f'<rect x="48" y="84" width="204" height="132" rx="14" fill="#2b2b33"/>{pans}'
+    else:  # Base, Corrector
+        art = (f'<rect x="128" y="48" width="44" height="36" rx="5" fill="#2b2b33"/>'
+               f'<rect x="108" y="82" width="84" height="150" rx="14" fill="#f4f1ee" stroke="#d6d0ca"/>'
+               f'<rect x="114" y="150" width="72" height="76" rx="10" fill="{c}"/>'
+               f'<rect x="122" y="104" width="56" height="30" rx="4" fill="#fff" stroke="#e3ded9"/>')
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" role="img" aria-label="{category}">'
+            f'<rect width="300" height="300" fill="{_shade(hex_color, 0.82)}"/>'
+            f'<ellipse cx="150" cy="262" rx="80" ry="10" fill="{_shade(hex_color, 0.65)}"/>{art}</svg>')
+
+
+def ensure_product_image(category, hex_color):
+    """Crea (si falta) la ilustración local del producto y devuelve su URL."""
+    name = f"{category.lower()}-{hex_color.lstrip('#').lower()}.svg"
+    path = os.path.join(IMG_DIR, name)
+    if not os.path.exists(path):
+        os.makedirs(IMG_DIR, exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(_product_svg(category, hex_color))
+    return IMG_URL_PREFIX + name
+
+
+def assign_local_images(cursor):
+    """Reemplaza URLs vacías o de placeholder por imágenes locales."""
+    rows = cursor.execute(
+        "SELECT id, category, hex_color FROM products "
+        "WHERE image_url IS NULL OR image_url NOT LIKE ?", (IMG_URL_PREFIX + "%",)).fetchall()
+    for row in rows:
+        cursor.execute("UPDATE products SET image_url = ? WHERE id = ?",
+                       (ensure_product_image(row[1], row[2]), row[0]))
 
 
 def get_connection():
@@ -47,6 +107,7 @@ def init_db():
         seed_products(cursor)
     seed_dupes(cursor)
     backfill_ingredients(cursor)
+    assign_local_images(cursor)
 
     conn.commit()
     conn.close()
